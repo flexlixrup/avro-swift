@@ -1,0 +1,24 @@
+{
+    "configurations": [
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:avro-swift}",
+            "name": "Debug AvroExamples",
+            "target": "AvroExamples",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AvroExamples"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:avro-swift}",
+            "name": "Release AvroExamples",
+            "target": "AvroExamples",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AvroExamples"
+        }
+    ]
+}
