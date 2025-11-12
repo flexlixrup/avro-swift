@@ -28,44 +28,82 @@ struct RecordEncodingTests {
 	@Test("Record primitives")
 	func recordPrimitives() throws {
 
-		let user = User(id: 42, name: "Ada", email: "ada@example.com")
-		let avroData = try AvroEncoder(schema: User.avroSchema).encode(user)
-		let expected = Data([
-			0x54, 0x06, 0x41, 0x64, 0x61, 0x1e, 0x61, 0x64, 0x61, 0x40, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63,
-			0x6f, 0x6d
-		])
-		#expect(avroData == expected)
+		let user = FlatRecordFixture.instance
+		let avroData = try AvroEncoder(schema: FlatRecordFixture.Def.avroSchema).encode(user)
+
+		#expect(avroData == FlatRecordFixture.serialized)
 	}
 
 	@Test("Nested record")
 	func nestedRecord() throws {
 
-		let value = UserWithAddress(
-			id: 42,
-			name: "Ada",
-			email: "ada@example.com",
-			address: Address(
-				street: "1 Hacker Way",
-				city: "Berlin",
-				zip: 10115
-			)
-		)
+		let value = NestedRecordFixture.instance
 
-		let avroData = try AvroEncoder(schema: UserWithAddress.avroSchema).encode(value)
-		let expected = Data([
-			0x54, 0x06, 0x41, 0x64, 0x61, 0x1e, 0x61, 0x64, 0x61, 0x40, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63,
-			0x6f, 0x6d, 0x18, 0x31, 0x20, 0x48, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x20, 0x57, 0x61, 0x79, 0x0c, 0x42, 0x65, 0x72,
-			0x6c, 0x69, 0x6e, 0x86, 0x9e, 0x01
-		])
+		let avroData = try AvroEncoder(schema: NestedRecordFixture.Def.avroSchema).encode(value)
+		let expected = NestedRecordFixture.serialized
 
 		#expect(avroData == expected)
 	}
 
 	@Test("Logical Type date")
 	func logicalTypeDate() throws {
-		let value = Person(name: "Ada", dateOfBirth: Date(timeIntervalSince1970: 364 * 86_400))
-		let avroData = try AvroEncoder(schema: Person.avroSchema).encode(value)
-		let expected = Data([0x06, 0x41, 0x64, 0x61, 0xd8, 0x05])
+		let value = LogicalDateFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalDateFixture.Def.avroSchema).encode(value)
+		let expected = LogicalDateFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type time-millis", .disabled("Logical Type not implemented"))
+	func logicalTypeTimeMillisEncode() throws {
+		let value = LogicalTimeMillisFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalTimeMillisFixture.Def.avroSchema).encode(value)
+		let expected = LogicalTimeMillisFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type timestamp-millis", .disabled("Logical Type not implemented"))
+	func logicalTypeTimestampMillisEncode() throws {
+		let value = LogicalTimestampMillisFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalTimestampMillisFixture.Def.avroSchema).encode(value)
+		let expected = LogicalTimestampMillisFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type time-micros", .disabled("Logical Type not implemented"))
+	func logicalTypeTimeMicrosEncode() throws {
+		let value = LogicalTimeMicrosFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalTimeMicrosFixture.Def.avroSchema).encode(value)
+		let expected = LogicalTimeMicrosFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type timestamp-micros", .disabled("Logical Type not implemented"))
+	func logicalTypeTimestampMicrosEncode() throws {
+		let value = LogicalTimestampMicrosFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalTimestampMicrosFixture.Def.avroSchema).encode(value)
+		let expected = LogicalTimestampMicrosFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type uuid", .disabled("Logical Type not implemented"))
+	func logicalTypeUUIDEncode() throws {
+		let value = LogicalUUIDFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalUUIDFixture.Def.avroSchema).encode(value)
+		let expected = LogicalUUIDFixture.serialized
+
+		#expect(avroData == expected)
+	}
+
+	@Test("Logical Type decimal", .disabled("Logical Type not implemented"))
+	func logicalTypeDecimalEncode() throws {
+		let value = LogicalDecimalFixture.instance
+		let avroData = try AvroEncoder(schema: LogicalDecimalFixture.Def.avroSchema).encode(value)
+		let expected = LogicalDecimalFixture.serialized
 
 		#expect(avroData == expected)
 	}

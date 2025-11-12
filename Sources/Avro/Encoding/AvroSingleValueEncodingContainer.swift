@@ -45,52 +45,43 @@ struct AvroSingleValueEncodingContainer: SingleValueEncodingContainer {
 	}
 
 	private func encodeLogical<T: Encodable>(_ v: T, as lt: AvroSchema.LogicalType) throws {
-		let referenceOffset: TimeInterval = 978307200.0
-
-		let timestamp: TimeInterval
-
-		if let d = v as? Date {
-			timestamp = d.timeIntervalSince1970
-		} else if let secondsSince2001 = v as? Double {
-			timestamp = secondsSince2001 + referenceOffset
-		} else {
-			throw EncodingError.invalidValue(
-				v,
-				EncodingError.Context(
-					codingPath: codingPath,
-					debugDescription: "Cannot encode value as Date or Double timestamp"
-				)
-			)
-		}
 
 		switch lt {
 			case .date:
+				let referenceOffset: TimeInterval = 978307200.0
+
+				let timestamp: TimeInterval
+				if let d = v as? Date {
+					timestamp = d.timeIntervalSince1970
+				} else if let secondsSince2001 = v as? Double {
+					timestamp = secondsSince2001 + referenceOffset
+				} else {
+					throw EncodingError.invalidValue(
+						v,
+						EncodingError.Context(
+							codingPath: codingPath,
+							debugDescription: "Cannot encode value as Date or Double timestamp"
+						)
+					)
+				}
 				let days = Int64(floor(timestamp / 86400.0))
 				writer.writeInt(Int32(truncatingIfNeeded: days))
 				return
 
 			case .timestampMillis:
-				let millis = Int64(timestamp * 1000.0)
-				writer.writeLong(millis)
-				return
+				fatalError("Timestamp millis logical type not implemented")
 
 			case .timestampMicros:
-				let micros = Int64(timestamp * 1_000_000.0)
-				writer.writeLong(micros)
-				return
+				fatalError("Timestamp micros logical type not implemented")
 
 			case .timeMillis:
-				let millisInDay = Int32(timestamp.truncatingRemainder(dividingBy: 86400.0) * 1000.0)
-				writer.writeInt(millisInDay)
-				return
+				fatalError("Time millis logical type not implemented")
 
 			case .timeMicros:
-				let microsInDay = Int64(timestamp.truncatingRemainder(dividingBy: 86400.0) * 1_000_000.0)
-				writer.writeLong(microsInDay)
-				return
+				fatalError("Time micros logical type not implemented")
 
 			case .uuid:
-				fatalError("UUID logical type not implemented")
+				fatalError("uuid logical type not implemented")
 
 			case .decimal(_, _):
 				fatalError("Decimal logical type not implemented")

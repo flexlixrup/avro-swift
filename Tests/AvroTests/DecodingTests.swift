@@ -23,37 +23,105 @@ struct PrimitiveDecodingTestss {
 
 	@Test("Record primitives")
 	func recordPrimitives() throws {
-		let data = Data([
-			0x54, 0x06, 0x41, 0x64, 0x61, 0x1e, 0x61, 0x64, 0x61, 0x40, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63,
-			0x6f, 0x6d
-		])
-		let user = User(id: 42, name: "Ada", email: "ada@example.com")
-		let schema = User.avroSchema
-		let decodedAvro = try AvroDecoder(schema: schema).decode(User.self, from: data)
+		let data = FlatRecordFixture.serialized
+		let user = FlatRecordFixture.instance
+		let schema = FlatRecordFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(FlatRecordFixture.Def.self, from: data)
 		#expect(decodedAvro == user)
 	}
 
 	@Test("Nested record")
 	func nestedRecord() throws {
-		let data = Data([
-			0x54, 0x06, 0x41, 0x64, 0x61, 0x1e, 0x61, 0x64, 0x61, 0x40, 0x65, 0x78, 0x61, 0x6d, 0x70, 0x6c, 0x65, 0x2e, 0x63,
-			0x6f, 0x6d, 0x18, 0x31, 0x20, 0x48, 0x61, 0x63, 0x6b, 0x65, 0x72, 0x20, 0x57, 0x61, 0x79, 0x0c, 0x42, 0x65, 0x72,
-			0x6c, 0x69, 0x6e, 0x86, 0x9e, 0x01
-		])
+		let data = NestedRecordFixture.serialized
 
-		let user = UserWithAddress(
-			id: 42,
-			name: "Ada",
-			email: "ada@example.com",
-			address: Address(
-				street: "1 Hacker Way",
-				city: "Berlin",
-				zip: 10115
-			)
-		)
+		let user = NestedRecordFixture.instance
 
-		let schema = UserWithAddress.avroSchema
-		let decodedAvro = try AvroDecoder(schema: schema).decode(UserWithAddress.self, from: data)
+		let schema = NestedRecordFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(NestedRecordFixture.Def.self, from: data)
 		#expect(decodedAvro == user)
+	}
+
+	@Test("Logical Type Date")
+	func logicalTypeDate() throws {
+		let data = LogicalDateFixture.serialized
+
+		let person = LogicalDateFixture.instance
+
+		let schema = LogicalDateFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalDateFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type time-millis", .disabled("Logical Type not implemented"))
+	func logicalTypeTimeMillis() throws {
+		let data = LogicalTimeMillisFixture.serialized
+
+		let person = LogicalTimeMillisFixture.instance
+
+		let schema = LogicalTimeMillisFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalTimeMillisFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type timestamp-millis", .disabled("Logical Type not implemented"))
+	func logicalTypeTimestampMillis() throws {
+		let data = LogicalTimestampMillisFixture.serialized
+
+		let person = LogicalTimestampMillisFixture.instance
+
+		let schema = LogicalTimestampMillisFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalTimestampMillisFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type time-micros", .disabled("Logical Type not implemented"))
+	func logicalTypeTimeMicros() throws {
+		let data = LogicalTimeMicrosFixture.serialized
+
+		let person = LogicalTimeMicrosFixture.instance
+
+		let schema = LogicalTimeMicrosFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalTimeMicrosFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type timestamp-micros", .disabled("Logical Type not implemented"))
+	func logicalTypeTimestampMicros() throws {
+		let data = LogicalTimestampMicrosFixture.serialized
+
+		let person = LogicalTimestampMicrosFixture.instance
+
+		let schema = LogicalTimestampMicrosFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalTimestampMicrosFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type uuid", .disabled("Logical Type not implemented"))
+	func logicalTypeUUID() throws {
+		let data = LogicalUUIDFixture.serialized
+
+		let person = LogicalUUIDFixture.instance
+
+		let schema = LogicalUUIDFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalUUIDFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
+	}
+
+	@Test("Logical Type decimal", .disabled("Logical Type not implemented"))
+	func logicalTypeDecimal() throws {
+		let data = LogicalDecimalFixture.serialized
+
+		let person = LogicalDecimalFixture.instance
+
+		let schema = LogicalDecimalFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(LogicalDecimalFixture.Def.self, from: data)
+		#expect(decodedAvro == person)
+
 	}
 }

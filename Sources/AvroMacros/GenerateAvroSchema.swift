@@ -178,15 +178,15 @@ public struct GenerateAvroSchema: MemberMacro {
 			case ".timeMillis":
 				return ["Int", "Int32"]
 			case ".timestampMillis":
-				return ["Int64"]
+				return ["Int64", "Date"]
 			case ".timeMicros":
 				return ["Int64"]
 			case ".timestampMicros":
-				return ["Int64"]
+				return ["Int64", "Date"]
 			case ".uuid":
-				return ["String"]
+				return ["String", "UUID"]
 			case ".decimal":
-				return ["Data", "[UInt8]"]
+				return ["Data", "[UInt8]", "Decimal"]
 			default:
 				return nil // Unknown logical type; skip validation
 		}
