@@ -50,9 +50,11 @@ final class _AvroEncodingBox: Encoder {
 		return .init(container)
 	}
 
-	func unkeyedContainer() -> any UnkeyedEncodingContainer {
-		fatalError("Not implemented")
-
+	func unkeyedContainer() -> UnkeyedEncodingContainer {
+		guard case .array(let items) = schema else {
+			preconditionFailure("Expected array for unkeyed container")
+		}
+		return AvroUnkeyedEncodingContainer(codingPath: codingPath, itemSchema: items, writer: writer)
 	}
 
 	func singleValueContainer() -> any SingleValueEncodingContainer {

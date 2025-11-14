@@ -107,4 +107,13 @@ struct RecordEncodingTests {
 
 		#expect(avroData == expected)
 	}
+	
+	@Test("Array record")
+	func ArrayOfStringsEncode() throws {
+		let value = ArrayFixture.instance
+		let avroData = try AvroEncoder(schema: ArrayFixture.Def.avroSchema).encode(value)
+		let expected = ArrayFixture.serialized
+		print(avroData.debugBytes)
+		#expect(avroData == expected)
+	}
 }

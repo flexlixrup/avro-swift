@@ -90,8 +90,21 @@ public struct GenerateAvroSchema: MemberMacro {
 			case "Data", "[UInt8]":
 				return ".bytes"
 			default:
+			if let nested = resolveNested(type: type) {
+				return nested
+			} else {
 				return "\(type).avroSchema"
+			}
 		}
+	}
+	
+	private static func resolveNested(type: String) -> String? {
+		if type.starts(with: "[") {
+			let underlying = String(type.split(separator: "[").last!.dropLast())
+			let internalType = mapToAvroType(rawType: underlying)
+			return ".array(items: \(internalType))"
+		}
+		return nil
 	}
 
 	private static func findLogicalTypeAttribute(on varDecl: VariableDeclSyntax, binding: PatternBindingSyntax) -> String? {
