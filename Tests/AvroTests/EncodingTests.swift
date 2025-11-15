@@ -133,7 +133,7 @@ struct RecordEncodingTests {
 		#expect(avroData.sorted() == expected.sorted())
 	}
 
-	@Test("Complex Record", .disabled("Needs fixing"))
+	@Test("Complex Record")
 	func complexRecord() throws {
 		let value = ComplexFixture.instance
 		let avroData = try AvroEncoder(schema: ComplexFixture.Def.avroSchema).encode(value)

@@ -58,11 +58,16 @@ final class _AvroEncodingBox: Encoder {
 	}
 
 	func unkeyedContainer() -> UnkeyedEncodingContainer {
-		guard case .array(let items) = schema else {
-			preconditionFailure("Expected array for unkeyed container")
+		switch schema {
+			case .array(let items):
+				let real = AvroUnkeyedEncodingContainer(codingPath: codingPath, itemSchema: items, writer: writer)
+				return FinalizingUnkeyedContainer(base: real)
+			case .bytes:
+				let real = AvroUnkeyedEncodingContainer(codingPath: codingPath, itemSchema: .bytes, writer: writer, isBytes: true)
+				return FinalizingUnkeyedContainer(base: real)
+			default:
+				preconditionFailure("Expected array or bytes for unkeyed container")
 		}
-		let real = AvroUnkeyedEncodingContainer(codingPath: codingPath, itemSchema: items, writer: writer)
-		return FinalizingUnkeyedContainer(base: real)
 	}
 
 	func singleValueContainer() -> any SingleValueEncodingContainer {
