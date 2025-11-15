@@ -47,7 +47,7 @@ class AvroUnkeyedEncodingContainer: UnkeyedEncodingContainer {
 			writer.writeBytes(tempWriter.data)
 		} else {
 			writer.writeLong(Int64(count)) // Length
-			writer.writeRawBlock(tempWriter.data.map { UInt8($0) })
+			writer.writeRawData(tempWriter.data)
 			writer.writeLong(0) // Termination
 		}
 		finalized = true

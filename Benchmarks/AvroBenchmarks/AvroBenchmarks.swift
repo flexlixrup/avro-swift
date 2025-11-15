@@ -12,8 +12,8 @@ let benchmarks: @Sendable () -> Void = {
 		configuration: .init(
 			metrics: [.wallClock])
 	) { benchmark in
-		let value = NestedRecordFixture.instance
-		let encoder = try AvroEncoder(schema: NestedRecordFixture.Def.avroSchema)
+		let value = ComplexFixture.instance
+		let encoder = try AvroEncoder(schema: ComplexFixture.Def.avroSchema)
 		for _ in benchmark.scaledIterations {
 			_ = try encoder.encode(value)
 		}

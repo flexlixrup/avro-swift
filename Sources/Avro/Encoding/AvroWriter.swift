@@ -32,6 +32,10 @@ class AvroWriter {
 		data.append(contentsOf: value)
 	}
 
+	func writeRawData(_ value: Data) {
+		data.append(value)
+	}
+
 	func writeInt(_ value: Int32) {
 		let zz = UInt64(zigZagEncode(value))
 		writeVarUInt(zz)
@@ -69,7 +73,8 @@ class AvroWriter {
 		data.append(utf8Bytes)
 	}
 
-	func writeVarUInt(_ value: UInt64) {
+	@inline(__always)
+	private func writeVarUInt(_ value: UInt64) {
 		var v = value
 		while (v & ~0x7F) != 0 {
 			data.append(UInt8((v & 0x7F) | 0x80))

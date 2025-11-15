@@ -24,6 +24,7 @@ class AvroReader {
 		self.offset = offset
 	}
 
+	@inline(__always)
 	private func readByte() throws -> UInt8 {
 		guard offset < data.count else { throw AvroError.endOfData }
 		let byte = data[offset]
@@ -31,13 +32,15 @@ class AvroReader {
 		return byte
 	}
 
+	@inline(__always)
 	private func readBytes(count: Int) throws -> Data {
 		guard offset + count <= data.count else { throw AvroError.endOfData }
 		let slice = data[offset ..< offset + count]
 		offset += count
-		return Data(slice) // Convert slice to new Data instance to avoid indexing issues
+		return Data(slice) // FIXME: https://github.com/swiftlang/swift-foundation/issues/1601
 	}
 
+	@inline(__always)
 	private func readVarUInt() throws -> UInt64 {
 		var shift: UInt64 = 0
 		var result: UInt64 = 0
