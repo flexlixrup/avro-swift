@@ -10,11 +10,13 @@ import Foundation
 class AvroWriter {
 	private(set) var data: Data = Data()
 
-	func zigZagEncode(_ value: Int64) -> UInt64 {
+	@inline(__always)
+	private func zigZagEncode(_ value: Int64) -> UInt64 {
 		UInt64(bitPattern: (value << 1) ^ (value >> 63))
 	}
 
-	func zigZagEncode(_ value: Int32) -> UInt32 {
+	@inline(__always)
+	private func zigZagEncode(_ value: Int32) -> UInt32 {
 		UInt32(bitPattern: (value << 1) ^ (value >> 31))
 	}
 
@@ -35,6 +37,8 @@ class AvroWriter {
 		writeVarUInt(zz)
 	}
 
+	@inlinable
+	@inline(__always)
 	func writeLong(_ value: Int64) {
 		let zz = zigZagEncode(value)
 		writeVarUInt(zz)

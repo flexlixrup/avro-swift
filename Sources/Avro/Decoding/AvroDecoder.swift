@@ -43,7 +43,6 @@ final class _AvroDecodingBox: Decoder {
 	}
 
 	func container<Key>(keyedBy: Key.Type) -> KeyedDecodingContainer<Key> {
-
 		switch schema {
 			case .record(_, _, _, _, let fields):
 				let container = AvroRecordKeyedDecodingContainer<Key>(fields: fields, reader: &reader, codingPath: [])
@@ -57,10 +56,14 @@ final class _AvroDecodingBox: Decoder {
 
 	}
 	func unkeyedContainer() -> UnkeyedDecodingContainer {
-		guard case .array(let items) = schema else {
-			preconditionFailure("Expected array for unkeyed container")
+		switch schema {
+			case .array(let itemSchema):
+				AvroUnkeyedDecodingContainer(reader: reader, schema: itemSchema, codingPath: codingPath)
+			case .bytes:
+				AvroUnkeyedDecodingContainer(reader: reader, schema: .bytes, codingPath: codingPath, isBytes: true)
+			default:
+				fatalError("Schema is not bytes or array")
 		}
-		return AvroUnkeyedDecodingContainer(reader: reader, schema: items, codingPath: codingPath)
 
 	}
 	func singleValueContainer() -> SingleValueDecodingContainer {

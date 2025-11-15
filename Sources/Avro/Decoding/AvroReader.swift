@@ -35,7 +35,7 @@ class AvroReader {
 		guard offset + count <= data.count else { throw AvroError.endOfData }
 		let slice = data[offset ..< offset + count]
 		offset += count
-		return slice
+		return Data(slice) // Convert slice to new Data instance to avoid indexing issues
 	}
 
 	private func readVarUInt() throws -> UInt64 {
@@ -80,6 +80,8 @@ class AvroReader {
 		return zigZagDecodeInt(UInt32(u))
 	}
 
+	@inline(__always)
+	@inlinable
 	func readLong() throws -> Int64 {
 		let u = try readVarUInt()
 		return zigZagDecodeLong(u)
@@ -88,14 +90,14 @@ class AvroReader {
 	func readFloat() throws -> Float {
 		let bytes = try readBytes(count: 4)
 		return bytes.withUnsafeBytes { ptr in
-			Float(bitPattern: ptr.load(as: UInt32.self).littleEndian)
+			Float(bitPattern: ptr.loadUnaligned(as: UInt32.self).littleEndian)
 		}
 	}
 
 	func readDouble() throws -> Double {
 		let bytes = try readBytes(count: 8)
 		return bytes.withUnsafeBytes { ptr in
-			Double(bitPattern: ptr.load(as: UInt64.self).littleEndian)
+			Double(bitPattern: ptr.loadUnaligned(as: UInt64.self).littleEndian)
 		}
 	}
 

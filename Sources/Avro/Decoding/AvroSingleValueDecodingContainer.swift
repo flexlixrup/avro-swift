@@ -65,7 +65,7 @@ struct AvroSingleValueDecodingContainer: SingleValueDecodingContainer {
 			case .timeMicros:
 				fatalError("Time micros logical type not implemented")
 			case .timestampMicros:
-				fatalError("UUID logical type not implemented")
+				fatalError("timestampMicros logical type not implemented")
 			case .uuid:
 				fatalError("UUID logical type not implemented")
 			case .decimal(_, _):

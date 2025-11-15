@@ -49,6 +49,20 @@
                ReferencedContainer = "container:">
             </BuildableReference>
          </BuildActionEntry>
+         <BuildActionEntry
+            buildForTesting = "YES"
+            buildForRunning = "YES"
+            buildForProfiling = "YES"
+            buildForArchiving = "YES"
+            buildForAnalyzing = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "AvroBenchmarks"
+               BuildableName = "AvroBenchmarks"
+               BlueprintName = "AvroBenchmarks"
+               ReferencedContainer = "container:">
+            </BuildableReference>
+         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -84,12 +98,21 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
+            BlueprintIdentifier = "AvroBenchmarks"
+            BuildableName = "AvroBenchmarks"
+            BlueprintName = "AvroBenchmarks"
+            ReferencedContainer = "container:">
+         </BuildableReference>
+      </BuildableProductRunnable>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
             BlueprintIdentifier = "AvroExamples"
             BuildableName = "AvroExamples"
             BlueprintName = "AvroExamples"
             ReferencedContainer = "container:">
          </BuildableReference>
-      </BuildableProductRunnable>
+      </MacroExpansion>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"
@@ -101,9 +124,9 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "AvroExamples"
-            BuildableName = "AvroExamples"
-            BlueprintName = "AvroExamples"
+            BlueprintIdentifier = "AvroBenchmarks"
+            BuildableName = "AvroBenchmarks"
+            BlueprintName = "AvroBenchmarks"
             ReferencedContainer = "container:">
          </BuildableReference>
       </BuildableProductRunnable>

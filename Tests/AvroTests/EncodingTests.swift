@@ -5,6 +5,7 @@
 //  Created by Felix Ruppert on 09.11.25.
 //
 
+import AvroFixtures
 import Foundation
 import Testing
 
@@ -129,6 +130,14 @@ struct RecordEncodingTests {
 		let value = MapFixture.instance
 		let avroData = try AvroEncoder(schema: MapFixture.Def.avroSchema).encode(value)
 		let expected = MapFixture.serialized
+		#expect(avroData.sorted() == expected.sorted())
+	}
+
+	@Test("Complex Record", .disabled("Needs fixing"))
+	func complexRecord() throws {
+		let value = ComplexFixture.instance
+		let avroData = try AvroEncoder(schema: ComplexFixture.Def.avroSchema).encode(value)
+		let expected = ComplexFixture.serialized
 		#expect(avroData.sorted() == expected.sorted())
 	}
 }

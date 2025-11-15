@@ -19,6 +19,26 @@
             "target": "AvroExamples",
             "configuration": "release",
             "preLaunchTask": "swift: Build Release AvroExamples"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:avro-swift}",
+            "name": "Debug AvroBenchmarks",
+            "target": "AvroBenchmarks",
+            "configuration": "debug",
+            "preLaunchTask": "swift: Build Debug AvroBenchmarks"
+        },
+        {
+            "type": "swift",
+            "request": "launch",
+            "args": [],
+            "cwd": "${workspaceFolder:avro-swift}",
+            "name": "Release AvroBenchmarks",
+            "target": "AvroBenchmarks",
+            "configuration": "release",
+            "preLaunchTask": "swift: Build Release AvroBenchmarks"
         }
     ]
 }

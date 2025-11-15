@@ -18,16 +18,18 @@ indirect public enum AvroSchema: Equatable, Sendable {
 	//
 	/// A field of an Avro schema.
 	public struct Field: Equatable, Sendable {
-		let name: String
-		let doc: String? = nil
-		let type: AvroSchema
-		let order: Order = .ignore
-		let aliases: [String]? = nil
+		public let name: String
+		public let doc: String? = nil
+		public let type: AvroSchema
+		public let order: Order = .ignore
+		public let aliases: [String]? = nil
 		// FIXME: Defaults
 		/// Initialize a new field.
 		/// - Parameters:
 		///   - name: The name of the field.
 		///   - type: The type of the field.
+		@inlinable
+		@inline(__always)
 		public init(name: String, type: AvroSchema) {
 			self.name = name
 			self.type = type

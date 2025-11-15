@@ -5,6 +5,7 @@
 //  Created by Felix Ruppert on 09.11.25.
 //
 
+import AvroFixtures
 import Foundation
 import Testing
 
@@ -156,6 +157,15 @@ struct RecordDecodingTests {
 		let value = MapFixture.instance
 		let schema = MapFixture.Def.avroSchema
 		let decodedAvro = try AvroDecoder(schema: schema).decode(MapFixture.Def.self, from: data)
+		#expect(decodedAvro == value)
+	}
+
+	@Test("Complex record")
+	func complexRecord() throws {
+		let data = ComplexFixture.serialized
+		let value = ComplexFixture.instance
+		let schema = ComplexFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(ComplexFixture.Def.self, from: data)
 		#expect(decodedAvro == value)
 
 	}
