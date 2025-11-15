@@ -1,5 +1,8 @@
 # avro-swift
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fflexlixrup%2Favro-swift%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/flexlixrup/avro-swift)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Fflexlixrup%2Favro-swift%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/flexlixrup/avro-swift)
+
 avro-swift is a native Swift library build to serialize and deserialize [Apache Avro™](https://avro.apache.org) data.
 
 ## Quick start
