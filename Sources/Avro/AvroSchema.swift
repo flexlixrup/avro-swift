@@ -11,7 +11,7 @@ indirect public enum AvroSchema: Equatable, Sendable {
 	// case fixed(name: String, size: Int)
 	// case `enum`(name: String, symbols: [String])
 	case array(items: AvroSchema)
-	// case map(values: AvroSchema)
+	case map(values: AvroSchema)
 	case record(name: String, namespace: String? = nil, doc: String? = nil, aliases: [String]? = nil, fields: [Field])
 	// case union([AvroSchema])
 	case logical(type: LogicalType, underlying: AvroSchema)

@@ -43,11 +43,18 @@ final class _AvroEncodingBox: Encoder {
 	}
 
 	func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-		guard case .record(_, _, _, _, let fields) = schema else {
-			fatalError("Schema is not a record")
+
+		switch schema {
+			case .record(_, _, _, _, let fields):
+				let container = AvroRecordKeyedEncodingContainer<Key>(fields: fields, writer: &writer, codingPath: codingPath)
+				return .init(container)
+			case .map(let valueSchema):
+				let real = AvroMapKeyedEncodingContainer<Key>(field: valueSchema, writer: &writer, codingPath: codingPath)
+				return .init(FinalizingKeyedContainer(base: real))
+			default:
+				fatalError("Keyed container only for records and maps")
 		}
-		let container = AvroKeyedEncodingContainer<Key>(fields: fields, writer: &writer, codingPath: codingPath)
-		return .init(container)
+
 	}
 
 	func unkeyedContainer() -> UnkeyedEncodingContainer {
@@ -61,6 +68,46 @@ final class _AvroEncodingBox: Encoder {
 	func singleValueContainer() -> any SingleValueEncodingContainer {
 		AvroSingleValueEncodingContainer(schema: schema, writer: &writer, codingPath: codingPath)
 
+	}
+
+	private final class FinalizingKeyedContainer<Key: CodingKey>: KeyedEncodingContainerProtocol {
+		private let base: AvroMapKeyedEncodingContainer<Key>
+
+		init(base: AvroMapKeyedEncodingContainer<Key>) {
+			self.base = base
+		}
+
+		var codingPath: [CodingKey] {
+			base.codingPath
+		}
+
+		var count: Int {
+			base.count
+		}
+
+		func encode<T>(_ value: T, forKey key: Key) throws where T: Encodable {
+			try base.encode(value, forKey: key)
+		}
+
+		func encodeNil(forKey key: Key) throws {
+			try base.encodeNil(forKey: key)
+		}
+
+		func nestedContainer<NestedKey>(keyedBy: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> {
+			base.nestedContainer(keyedBy: keyedBy, forKey: key)
+		}
+
+		func nestedUnkeyedContainer(forKey key: Key) -> UnkeyedEncodingContainer { base.nestedUnkeyedContainer(forKey: key) }
+
+		func superEncoder() -> Encoder { base.superEncoder() }
+
+		func superEncoder(forKey key: Key) -> Encoder {
+			base.superEncoder(forKey: key)
+		}
+
+		deinit {
+			base.finalize()
+		}
 	}
 
 	private final class FinalizingUnkeyedContainer: UnkeyedEncodingContainer {

@@ -5,7 +5,7 @@
 //  Created by Felix Ruppert on 09.11.25.
 //
 
-struct AvroKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContainerProtocol {
+struct AvroRecordKeyedEncodingContainer<Key: CodingKey>: KeyedEncodingContainerProtocol {
 	var codingPath: [CodingKey]
 	var fields: [AvroSchema.Field]
 	var writer: AvroWriter

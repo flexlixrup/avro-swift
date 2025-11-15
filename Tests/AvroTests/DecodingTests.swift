@@ -131,22 +131,32 @@ struct RecordDecodingTests {
 	@Test("Array record")
 	func arrayOfStringsDecode() throws {
 		let data = ArrayFixture.serialized
-		
+
 		let value = ArrayFixture.instance
-		
+
 		let schema = ArrayFixture.Def.avroSchema
 		let decodedAvro = try AvroDecoder(schema: schema).decode(ArrayFixture.Def.self, from: data)
 		#expect(decodedAvro == value)
 	}
-	
+
 	@Test("Double Array record")
 	func doubleArrayDecode() throws {
 		let data = DoubleArrayFixture.serialized
-		
+
 		let value = DoubleArrayFixture.instance
-		
+
 		let schema = DoubleArrayFixture.Def.avroSchema
 		let decodedAvro = try AvroDecoder(schema: schema).decode(DoubleArrayFixture.Def.self, from: data)
 		#expect(decodedAvro == value)
+	}
+
+	@Test("Map record")
+	func mapRecord() throws {
+		let data = MapFixture.serialized
+		let value = MapFixture.instance
+		let schema = MapFixture.Def.avroSchema
+		let decodedAvro = try AvroDecoder(schema: schema).decode(MapFixture.Def.self, from: data)
+		#expect(decodedAvro == value)
+
 	}
 }

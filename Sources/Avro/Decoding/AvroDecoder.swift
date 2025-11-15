@@ -43,12 +43,18 @@ final class _AvroDecodingBox: Decoder {
 	}
 
 	func container<Key>(keyedBy: Key.Type) -> KeyedDecodingContainer<Key> {
-		guard case .record(_, _, _, _, let fields) = schema else {
-			fatalError("Schema is not a record")
-		}
-		let container = AvroKeyedDecodingContainer<Key>(fields: fields, reader: &reader, codingPath: [])
 
-		return .init(container)
+		switch schema {
+			case .record(_, _, _, _, let fields):
+				let container = AvroRecordKeyedDecodingContainer<Key>(fields: fields, reader: &reader, codingPath: [])
+				return .init(container)
+			case .map(let itemSchema):
+				let container = AvroMapKeyedDecodingContainer<Key>(reader: reader, schema: itemSchema, codingPath: [])
+				return .init(container)
+			default:
+				fatalError("Schema is not a record or map")
+		}
+
 	}
 	func unkeyedContainer() -> UnkeyedDecodingContainer {
 		guard case .array(let items) = schema else {

@@ -123,4 +123,12 @@ struct RecordEncodingTests {
 		let expected = DoubleArrayFixture.serialized
 		#expect(avroData == expected)
 	}
+
+	@Test("Map record")
+	func mapEncode() throws {
+		let value = MapFixture.instance
+		let avroData = try AvroEncoder(schema: MapFixture.Def.avroSchema).encode(value)
+		let expected = MapFixture.serialized
+		#expect(avroData.sorted() == expected.sorted())
+	}
 }

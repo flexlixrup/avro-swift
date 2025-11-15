@@ -537,3 +537,43 @@ enum DoubleArrayFixture {
 	])
 
 }
+
+enum MapFixture {
+	@Schema
+	struct Def: Codable, Equatable {
+		let stringToInt: [String: Int]
+	}
+
+	static let schema: AvroSchema = .record(
+		name: "MapRecord",
+		namespace: "test",
+		doc: "A record with a map field",
+		aliases: ["MapType"],
+		fields: [
+			.init(name: "stringToInt", type: .map(values: .int))
+		]
+	)
+
+	static let avroSchemaString = """
+		  {
+			  "type": "record",
+			  "name": "MapRecord",
+			  "fields": [
+				  {
+					  "name": "stringToInt",
+					  "type": {
+						  "type": "map",
+						  "values": "int"
+					  }
+				  }
+			  ]
+		  }
+		"""
+
+	static let instance = Def(stringToInt: ["apple": 1, "banana": 2, "cherry": 3])
+
+	static let serialized = Data([
+		0x06, 0x0a, 0x61, 0x70, 0x70, 0x6c, 0x65, 0x02, 0x0c, 0x62, 0x61, 0x6e, 0x61, 0x6e, 0x61, 0x04, 0x0c, 0x63, 0x68, 0x65,
+		0x72, 0x72, 0x79, 0x06, 0x00
+	])
+}

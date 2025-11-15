@@ -1,3 +1,4 @@
+import Foundation
 //
 //  AvroMacros.swift
 //  avro-swift
@@ -7,7 +8,6 @@
 import SwiftCompilerPlugin
 import SwiftDiagnostics
 import SwiftSyntax
-import Foundation
 import SwiftSyntaxBuilder
 import SwiftSyntaxMacros
 
@@ -99,12 +99,42 @@ public struct GenerateAvroSchema: MemberMacro {
 	}
 
 	private static func resolveNested(type: String) -> String? {
-		if type.starts(with: "[") {
-			let underlying = String(type.split(separator: "[").last!.dropLast())
-			let internalType = mapToAvroType(rawType: underlying)
-			return ".array(items: \(internalType))"
+		// Normalize whitespace
+		let t = type.trimmingCharacters(in: .whitespacesAndNewlines)
+		guard t.hasPrefix("[") && t.hasSuffix("]") else { return nil }
+
+		// Strip outer brackets
+		let inner = String(t.dropFirst().dropLast()).trimmingCharacters(in: .whitespacesAndNewlines)
+
+		// Determine if this is an array [T] or a dictionary [K: V] at the top level.
+		// We need to find a top-level colon, not inside nested brackets.
+		func topLevelColonIndex(in s: String) -> String.Index? {
+			var depth = 0
+			var idx = s.startIndex
+			while idx < s.endIndex {
+				let ch = s[idx]
+				if ch == "[" { depth += 1 } else if ch == "]" { depth -= 1 } else if ch == ":" && depth == 0 { return idx }
+				idx = s.index(after: idx)
+			}
+			return nil
 		}
-		return nil
+
+		guard let colon = topLevelColonIndex(in: inner) else {
+			// Array [T]
+			let elementSchema = mapToAvroType(rawType: inner)
+			return ".array(items: \(elementSchema))"
+		}
+		let keyPart = inner[..<colon].trimmingCharacters(in: .whitespacesAndNewlines)
+		let valuePart = inner[inner.index(after: colon)...].trimmingCharacters(in: .whitespacesAndNewlines)
+
+		// Only String keys are supported by Avro maps
+		let normalizedKey = normalizeTypeName(keyPart)
+		guard normalizedKey == "String" else {
+			// Unsupported key type for Avro maps; let caller handle as record reference
+			return nil
+		}
+		let valueSchema = mapToAvroType(rawType: valuePart)
+		return ".map(values: \(valueSchema))"
 	}
 
 	private static func findLogicalTypeAttribute(on varDecl: VariableDeclSyntax, binding: PatternBindingSyntax) -> String? {

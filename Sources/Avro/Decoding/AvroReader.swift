@@ -8,11 +8,20 @@
 import Foundation
 
 class AvroReader {
-	private let data: Data
+	let data: Data
 	private var offset: Int = 0
+
+	var currentOffset: Int {
+		offset
+	}
 
 	init(data: Data) {
 		self.data = data
+	}
+
+	init(data: Data, offset: Int) {
+		self.data = data
+		self.offset = offset
 	}
 
 	private func readByte() throws -> UInt8 {
@@ -102,5 +111,72 @@ class AvroReader {
 			throw AvroError.invalidUTF8
 		}
 		return str
+	}
+
+	func skip(schema: AvroSchema) throws {
+		switch schema {
+			case .null:
+				break
+			case .boolean:
+				_ = try readByte()
+			case .int:
+				_ = try readInt()
+			case .long:
+				_ = try readLong()
+			case .float:
+				_ = try readBytes(count: 4)
+			case .double:
+				_ = try readBytes(count: 8)
+			case .bytes:
+				_ = try readBytes()
+			case .string:
+				_ = try readString()
+			case .array(let items):
+				var isAtEnd = false
+				while !isAtEnd {
+					let blockCount = try readLong()
+					if blockCount == 0 {
+						isAtEnd = true
+					} else if blockCount < 0 {
+						_ = try readLong()
+						let count = Int(-blockCount)
+						for _ in 0 ..< count {
+							try skip(schema: items)
+						}
+					} else {
+						let count = Int(blockCount)
+						for _ in 0 ..< count {
+							try skip(schema: items)
+						}
+					}
+				}
+			case .map(let values):
+				var isAtEnd = false
+				while !isAtEnd {
+					let blockCount = try readLong()
+					if blockCount == 0 {
+						isAtEnd = true
+					} else if blockCount < 0 {
+						_ = try readLong()
+						let count = Int(-blockCount)
+						for _ in 0 ..< count {
+							_ = try readString()
+							try skip(schema: values)
+						}
+					} else {
+						let count = Int(blockCount)
+						for _ in 0 ..< count {
+							_ = try readString()
+							try skip(schema: values)
+						}
+					}
+				}
+			case .record(_, _, _, _, let fields):
+				for field in fields {
+					try skip(schema: field.type)
+				}
+			case .logical(_, let underlying):
+				try skip(schema: underlying)
+		}
 	}
 }

@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct AvroKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
+struct AvroRecordKeyedDecodingContainer<Key: CodingKey>: KeyedDecodingContainerProtocol {
 	var codingPath: [CodingKey]
 	var fields: [AvroSchema.Field]
 	var reader: AvroReader
