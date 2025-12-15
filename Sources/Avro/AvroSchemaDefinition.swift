@@ -204,8 +204,8 @@ extension AvroSchemaDefinition: Codable {
 					try unkeyedContainer.encode(schema)
 				}
 			case .logical(let logicalType, let underlying):
-				try underlying.encode(to: encoder)
 				var container = encoder.container(keyedBy: CodingKeys.self)
+				try container.encode(underlying, forKey: .type)
 				switch logicalType {
 					case .date:
 						try container.encode("date", forKey: .logicalType)
