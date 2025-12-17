@@ -193,7 +193,11 @@ struct AvroSingleValueEncodingContainer: SingleValueEncodingContainer {
 				return
 
 			case .timestampMillis:
-				fatalError("Timestamp millis logical type not implemented")
+				guard let v = v as? Double else {
+					fatalError("\(type(of: v)) Not understood for logical type .timestampMillis")
+				}
+				let date = Date(timeIntervalSinceReferenceDate: v);
+				writer.writeLong(Int64(date.timeIntervalSince1970 * 1000));
 
 			case .timestampMicros:
 				fatalError("Timestamp micros logical type not implemented")
