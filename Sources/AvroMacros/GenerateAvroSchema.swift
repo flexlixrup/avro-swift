@@ -55,7 +55,7 @@ public struct GenerateAvroSchema: MemberMacro, ExtensionMacro {
 				} else {
 					mapped = mapToAvroType(rawType: rawType)
 				}
-				fieldEntries.append(".init(name: \"\(propName)\", type: \(mapped))")
+				fieldEntries.append(".init(name: Self.CodingKeys.\(propName).stringValue, type: \(mapped))")
 			}
 		}
 
